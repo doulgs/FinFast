@@ -1,0 +1,15 @@
+export const spacing = {
+  sl: 2,
+  ssl: 4,
+  sssl: 6,
+  s: 8,
+  m: 16,
+  l: 24,
+  xl: 32,
+  xxl: 40,
+  xxxl: 48,
+  huge: 56,
+  massive: 64,
+  gigantic: 72,
+  enormous: 80,
+};

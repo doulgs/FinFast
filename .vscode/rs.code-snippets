@@ -1,0 +1,22 @@
+{
+  "Padrao para Restyle": {
+    "prefix": "rnrs",
+    "scope": "javascript,typescript,tsx",
+    "body": [
+      "import React from 'react';",
+      "import { createBox, createText } from '@shopify/restyle';",
+      "import { theme_props } from '../../themes';\n",
+      "const Box = createBox<theme_props>();",
+      "const Text = createText<theme_props>();\n",
+      "const ${1:${TM_DIRECTORY/.*[\\\\\\/](.*)$/$1/}}: React.FC = () => {",
+      "  return (",
+      "    <Box>",
+      "      <Text>${1:${TM_DIRECTORY/.*[\\\\\\/](.*)$/$1/}}</Text>",
+      "    </Box>",
+      "  );",
+      "};\n",
+      "export default ${1:${TM_DIRECTORY/.*[\\\\\\/](.*)$/$1/}};\n"
+    ],
+    "description": "Importe para Restyle"
+  }
+}
