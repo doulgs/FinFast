@@ -5,7 +5,7 @@ import { ThemeProps } from "../themes";
 const BoxStyled = createBox<ThemeProps>();
 
 interface Props extends BoxProps<ThemeProps> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function Box({ children, ...rest }: Props) {

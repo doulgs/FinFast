@@ -1,0 +1,30 @@
+export const buttonVariants = {
+  defaults: {},
+  solid: {
+    backgroundColor: "brand_primary",
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+  },
+  outline: {
+    backgroundColor: "brand_background",
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "brand_secondary",
+  },
+  outline_icon: {
+    backgroundColor: "brand_background",
+    height: 56,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: "brand_secondary",
+    flexDirection: "row",
+    gap: "m",
+  },
+};

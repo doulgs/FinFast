@@ -1,5 +1,7 @@
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+import { BottomSheetProvider } from "@/contexts/BottomSheetContext";
+import { SupabaseProvider } from "@/contexts/SupabaseContext";
 import {
   Lexend_400Regular,
   Lexend_600SemiBold,
@@ -8,6 +10,7 @@ import {
 } from "@expo-google-fonts/lexend";
 import { NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "@shopify/restyle";
+import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
@@ -36,10 +39,14 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <ThemeProvider theme={Theme}>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <Routes />
-        </NavigationContainer>
+        <SupabaseProvider>
+          <BottomSheetProvider>
+            <NavigationContainer>
+              <StatusBar style="auto" />
+              <Routes />
+            </NavigationContainer>
+          </BottomSheetProvider>
+        </SupabaseProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

@@ -15,4 +15,19 @@ export const textVariants = {
     fontFamily: "Lexend_600SemiBold",
     fontSize: 18,
   },
+  button_solid: {
+    color: "shapes_boxes",
+    fontFamily: "Lexend_600SemiBold",
+    fontSize: 18,
+  },
+  button_outline: {
+    color: "texts_body",
+    fontFamily: "Lexend_600SemiBold",
+    fontSize: 18,
+  },
+  button_icon_outline: {
+    color: "texts_body",
+    fontFamily: "Lexend_600SemiBold",
+    fontSize: 18,
+  },
 };

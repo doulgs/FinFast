@@ -1,6 +1,6 @@
 export const colors = {
-  brand_gradient: "#FF941A",
-  brand_primary: "#FF941A",
+  brand_gradient: "#45276f",
+  brand_primary: "#45276f",
   brand_secondary: "#585666",
   brand_background: "#FFFFFF",
 
@@ -12,4 +12,6 @@ export const colors = {
 
   shapes_stroke: "#E3E3E5",
   shapes_boxes: "#FAFAFC",
+
+  overlay: "rgba(0, 0, 0, 0.1)",
 };
