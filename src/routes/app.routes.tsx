@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View } from "react-native";
 
-import Home from "../screens/app/Home";
-import Movement from "../screens/app/Movement";
-import Summary from "../screens/app/Summary";
+import Home from "@/screens/app/Home";
+import Movement from "@/screens/app/Movement";
+import Summary from "@/screens/app/Summary";
 
 const Tab = createBottomTabNavigator();
 

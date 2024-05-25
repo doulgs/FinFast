@@ -1,4 +1,5 @@
-import { Box, Text } from "../../components";
+import { Box } from "@/components/Box";
+import { Text } from "@/components/Text";
 
 const Home: React.FC = () => {
   return (
