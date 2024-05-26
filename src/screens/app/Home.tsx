@@ -70,6 +70,7 @@ const Home: React.FC = () => {
         <FlatList
           data={listMoviments}
           keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
           ListHeaderComponent={() => (
             <Box borderBottomWidth={1} paddingVertical="l" marginBottom="l">
               <Text variant="title">
@@ -117,8 +118,11 @@ const Home: React.FC = () => {
                 </Box>
 
                 <Box>
-                  <Text variant="title" fontSize={16}>
+                  <Text variant="title" fontSize={16} textAlign="right">
                     {formatCurrency(moviment.value)}
+                  </Text>
+                  <Text variant="default" fontSize={14} textAlign="right">
+                    Alimentação
                   </Text>
                 </Box>
               </Box>
