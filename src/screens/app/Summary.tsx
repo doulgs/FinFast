@@ -1,9 +1,9 @@
-import { MovimentTypes } from "@/@types/moviments";
 import { Box } from "@/components/Box";
 import { DetailsMoviments } from "@/components/DetailsMoviments";
 import { Header } from "@/components/Header";
 import { Text } from "@/components/Text";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
+import { MovimentTypes } from "@/hooks/useMoviments";
 import { supabase } from "@/services/supabase";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { formatDateTime } from "@/utils/formatDate";
@@ -65,7 +65,7 @@ const Summary: React.FC = () => {
 
   return (
     <Box flex={1} bg="brand_background">
-      <Header />
+      <Header visible_number_of_accounts={false} />
       <Box flex={1} paddingHorizontal="l" pt="s">
         <FlatList
           data={listMoviments}

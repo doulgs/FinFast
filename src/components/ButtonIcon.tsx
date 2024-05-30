@@ -1,4 +1,5 @@
 import { ThemeProps } from "@/themes";
+import { Ionicons } from "@expo/vector-icons";
 import {
   SpacingProps,
   VariantProps,
@@ -9,7 +10,6 @@ import {
 } from "@shopify/restyle";
 import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { Text } from "./Text";
-import { Ionicons } from "@expo/vector-icons";
 
 type BoxCustomProps = SpacingProps<ThemeProps> &
   VariantProps<ThemeProps, "buttonVariants">;

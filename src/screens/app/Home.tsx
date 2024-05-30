@@ -1,136 +1,108 @@
-import { MovimentTypes } from "@/@types/moviments";
 import { Box } from "@/components/Box";
 import { DetailsMoviments } from "@/components/DetailsMoviments";
 import { Header } from "@/components/Header";
+import { Loading } from "@/components/Loading";
 import { Text } from "@/components/Text";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
-import { supabase } from "@/services/supabase";
-import { formatCurrency } from "@/utils/formatCurrency";
-import { formatDateTime } from "@/utils/formatDate";
-import { getMonthName } from "@/utils/getMonthName";
+import { useMoviments } from "@/hooks/useMoviments";
+import { formatCurrency, formatDateTime, getMonthName } from "@/utils";
 import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
-import { Alert, FlatList, Pressable } from "react-native";
+import { useCallback } from "react";
+import { FlatList, Pressable } from "react-native";
 
 const Home: React.FC = () => {
   const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-
-  const [listMoviments, setListMoviments] = useState<MovimentTypes[]>([]);
-
-  const fetchMoviments = async () => {
-    const { data, error } = await supabase
-      .from("moviments")
-      .select("*")
-      .eq("wasPaid", "FALSE")
-      .order("id", { ascending: false });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      setListMoviments(data);
-    }
-  };
-
-  const updateMoviment = async (id: number, wasPaid: boolean) => {
-    const { error } = await supabase
-      .from("moviments")
-      .update({ wasPaid })
-      .match({ id });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      closeBottomSheet();
-      await fetchMoviments();
-    }
-  };
-
-  const deleteMoviment = async (id: number) => {
-    const { error } = await supabase.from("moviments").delete().match({ id });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      closeBottomSheet();
-      await fetchMoviments();
-    }
-  };
+  const {
+    listMoviments,
+    fetchMoviments,
+    updateMoviment,
+    deleteMoviment,
+    loadingMoviments,
+  } = useMoviments();
 
   useFocusEffect(
     useCallback(() => {
-      //setLoading(true);
       fetchMoviments();
-      //setLoading(true);
       return () => {};
-    }, [openBottomSheet])
+    }, [fetchMoviments, openBottomSheet])
   );
 
   return (
-    <Box flex={1} bg="brand_background">
-      <Header number_of_accounts={listMoviments.length} />
-      <Box flex={1} paddingHorizontal="l" pt="xxxl">
-        <FlatList
-          data={listMoviments}
-          keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={() => (
-            <Box borderBottomWidth={1} paddingVertical="l" marginBottom="l">
-              <Text variant="title">
-                Movimentos lançados em {getMonthName()}
-              </Text>
-            </Box>
-          )}
-          ItemSeparatorComponent={() => (
-            <Box marginVertical="s" height={1} backgroundColor="overlay" />
-          )}
-          renderItem={({ item: moviment }) => (
-            <Pressable
-              onPress={() =>
-                openBottomSheet(
-                  <DetailsMoviments
-                    moviment={moviment}
-                    updateMoviment={updateMoviment}
-                    deleteMoviment={deleteMoviment}
-                  />
-                )
-              }
-            >
-              <Box
-                flexDirection="row"
-                alignItems="center"
-                justifyContent="space-between"
-                marginVertical="s"
+    <>
+      <Box flex={1} bg="brand_background">
+        <Header
+          visible_number_of_accounts
+          number_of_accounts={listMoviments.length}
+        />
+        <Box flex={1} paddingHorizontal="l" pt="xxxl">
+          <FlatList
+            data={listMoviments}
+            keyExtractor={(item, index) => index.toString()}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={() => (
+              <Box borderBottomWidth={1} paddingVertical="l" marginBottom="l">
+                <Text variant="title">
+                  Movimentos lançados em {getMonthName()}
+                </Text>
+              </Box>
+            )}
+            ItemSeparatorComponent={() => (
+              <Box marginVertical="s" height={1} backgroundColor="overlay" />
+            )}
+            renderItem={({ item: moviment }) => (
+              <Pressable
+                onPress={() =>
+                  openBottomSheet(
+                    <DetailsMoviments
+                      moviment={moviment}
+                      updateMoviment={updateMoviment}
+                      deleteMoviment={deleteMoviment}
+                    />
+                  )
+                }
               >
-                <Box flex={1}>
-                  <Text variant="title" fontSize={18}>
-                    {moviment.description}
-                  </Text>
-                  <Box
-                    flexDirection="row"
-                    alignItems="center"
-                    gap="s"
-                    marginTop="s"
-                    marginLeft="s"
-                  >
-                    <AntDesign name="clockcircleo" size={14} color="black" />
-                    <Text variant="subTitle" fontSize={14}>
-                      Vence em {formatDateTime(moviment.date)}
+                <Box
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  marginVertical="s"
+                >
+                  <Box flex={1}>
+                    <Text variant="title" fontSize={18}>
+                      {moviment.description}
+                    </Text>
+                    <Box
+                      flexDirection="row"
+                      alignItems="center"
+                      gap="s"
+                      marginTop="s"
+                      marginLeft="s"
+                    >
+                      <AntDesign name="clockcircleo" size={14} color="black" />
+                      <Text variant="subTitle" fontSize={14}>
+                        Vence em {formatDateTime(moviment.date)}
+                      </Text>
+                    </Box>
+                  </Box>
+
+                  <Box>
+                    <Text variant="title" fontSize={16} textAlign="right">
+                      {formatCurrency(moviment.value)}
+                    </Text>
+                    <Text variant="default" fontSize={14} textAlign="right">
+                      {moviment.category}
                     </Text>
                   </Box>
                 </Box>
-
-                <Box>
-                  <Text variant="title" fontSize={16} textAlign="right">
-                    {formatCurrency(moviment.value)}
-                  </Text>
-                  <Text variant="default" fontSize={14} textAlign="right">
-                    Alimentação
-                  </Text>
-                </Box>
-              </Box>
-            </Pressable>
-          )}
-        />
+              </Pressable>
+            )}
+          />
+        </Box>
       </Box>
-    </Box>
+
+      {/* <Loading isVisble={loadingMoviments} /> */}
+    </>
   );
 };
 

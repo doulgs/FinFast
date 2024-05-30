@@ -1,5 +1,5 @@
-import { MovimentTypes } from "@/@types/moviments";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
+import { MovimentTypes } from "@/hooks/useMoviments";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Box } from "./Box";
 import { Button } from "./Button";
@@ -50,14 +50,20 @@ export function DetailsMoviments({
           <Button
             title="Confirmar"
             variant="solid"
-            onPress={() => updateMoviment(moviment.id, !moviment.wasPaid)}
+            onPress={() => {
+              updateMoviment(moviment.id, !moviment.wasPaid),
+                closeBottomSheet();
+            }}
           />
         </Box>
         <ButtonIcon
           title="Apagar conta"
           variant="outline_icon"
           icon_name="trash"
-          onPress={() => deleteMoviment(moviment.id)}
+          onPress={() => {
+            deleteMoviment(moviment.id);
+            closeBottomSheet();
+          }}
         />
       </Box>
     </Box>
