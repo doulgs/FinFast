@@ -13,5 +13,5 @@ export const colors = {
   shapes_stroke: "#E3E3E5",
   shapes_boxes: "#FAFAFC",
 
-  overlay: "rgba(0, 0, 0, 0.1)",
+  overlay: "rgba(0, 0, 0, 0.5)",
 };

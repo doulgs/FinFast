@@ -26,44 +26,62 @@ export interface ParcelTypes {
 }
 
 const useMoviments = () => {
+  const [loadingMoviments, setLoadingMoviments] = useState<boolean>(false);
   const [listMoviments, setListMoviments] = useState<MovimentTypes[]>([]);
   const [categoryList, setCategoryList] = useState<CategoryTypes[]>([]);
   const [parcelList, setParcelList] = useState<ParcelTypes[]>([]);
 
   const fetchMoviments = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("moviments")
-      .select("*")
-      .eq("wasPaid", "FALSE")
-      .order("id", { ascending: false });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      setListMoviments(data);
+    try {
+      setLoadingMoviments(true);
+
+      const { data, error } = await supabase
+        .from("moviments")
+        .select("*")
+        .eq("wasPaid", "FALSE")
+        .order("id", { ascending: false });
+      if (error) {
+        Alert.alert("Error", error.message);
+      } else {
+        setListMoviments(data);
+      }
+
+      setLoadingMoviments(false);
+    } catch (error) {
+      setLoadingMoviments(false);
+      Alert.alert("Error", `${error}`);
     }
   }, []);
 
   const fetchCategories = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("*")
-      .order("id", { ascending: true });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      setCategoryList(data);
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        Alert.alert("Error", error.message);
+      } else {
+        setCategoryList(data);
+      }
+    } catch (error) {
+      Alert.alert("Error", `${error}`);
     }
   }, []);
 
   const fetchParcel = useCallback(async () => {
-    const { data, error } = await supabase
-      .from("parcel")
-      .select("*")
-      .order("id", { ascending: true });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      setParcelList(data);
+    try {
+      const { data, error } = await supabase
+        .from("parcel")
+        .select("*")
+        .order("id", { ascending: true });
+      if (error) {
+        Alert.alert("Error", error.message);
+      } else {
+        setParcelList(data);
+      }
+    } catch (error) {
+      Alert.alert("Error", `${error}`);
     }
   }, []);
 
@@ -77,20 +95,24 @@ const useMoviments = () => {
       id_organization,
       category,
     }: Omit<MovimentTypes, "id">) => {
-      const { data, error } = await supabase.from("moviments").insert({
-        description,
-        value,
-        date,
-        wasPaid,
-        id_user,
-        id_organization,
-        category,
-      });
-      if (error) {
-        Alert.alert("Error", error.message);
-      } else {
-        ToastAndroid.show("Movimentação inserida", ToastAndroid.SHORT);
-        await fetchMoviments();
+      try {
+        const { data, error } = await supabase.from("moviments").insert({
+          description,
+          value,
+          date,
+          wasPaid,
+          id_user,
+          id_organization,
+          category,
+        });
+        if (error) {
+          Alert.alert("Error", error.message);
+        } else {
+          ToastAndroid.show("Movimentação inserida", ToastAndroid.SHORT);
+          await fetchMoviments();
+        }
+      } catch (error) {
+        Alert.alert("Error", `${error}`);
       }
     },
     [fetchMoviments]
@@ -98,15 +120,19 @@ const useMoviments = () => {
 
   const updateMoviment = useCallback(
     async (id: number, wasPaid: boolean) => {
-      const { error } = await supabase
-        .from("moviments")
-        .update({ wasPaid })
-        .match({ id });
-      if (error) {
-        Alert.alert("Error", error.message);
-      } else {
-        ToastAndroid.show("Movimentação atualizada", ToastAndroid.SHORT);
-        await fetchMoviments();
+      try {
+        const { error } = await supabase
+          .from("moviments")
+          .update({ wasPaid })
+          .match({ id });
+        if (error) {
+          Alert.alert("Error", error.message);
+        } else {
+          ToastAndroid.show("Movimentação atualizada", ToastAndroid.SHORT);
+          await fetchMoviments();
+        }
+      } catch (error) {
+        Alert.alert("Error", `${error}`);
       }
     },
     [fetchMoviments]
@@ -114,12 +140,19 @@ const useMoviments = () => {
 
   const deleteMoviment = useCallback(
     async (id: number) => {
-      const { error } = await supabase.from("moviments").delete().match({ id });
-      if (error) {
-        Alert.alert("Error", error.message);
-      } else {
-        ToastAndroid.show("Movimentação deletada", ToastAndroid.SHORT);
-        await fetchMoviments();
+      try {
+        const { error } = await supabase
+          .from("moviments")
+          .delete()
+          .match({ id });
+        if (error) {
+          Alert.alert("Error", error.message);
+        } else {
+          ToastAndroid.show("Movimentação deletada", ToastAndroid.SHORT);
+          await fetchMoviments();
+        }
+      } catch (error) {
+        Alert.alert("Error", `${error}`);
       }
     },
     [fetchMoviments]
@@ -135,6 +168,7 @@ const useMoviments = () => {
     insertMoviment,
     updateMoviment,
     deleteMoviment,
+    loadingMoviments,
   };
 };
 

@@ -4,10 +4,14 @@ import { Box } from "./Box";
 import { Text } from "./Text";
 
 type InfoProps = {
+  visible_number_of_accounts: boolean;
   number_of_accounts?: number;
 };
 
-export function Header({ number_of_accounts = 0 }: InfoProps) {
+export function Header({
+  visible_number_of_accounts,
+  number_of_accounts,
+}: InfoProps) {
   return (
     <>
       <Box flex={1} maxHeight={200}>
@@ -40,7 +44,7 @@ export function Header({ number_of_accounts = 0 }: InfoProps) {
             </Box>
           </Box>
         </ImageBackground>
-        {number_of_accounts > 0 && (
+        {visible_number_of_accounts && (
           <Box
             height={80}
             borderRadius={8}
@@ -62,10 +66,17 @@ export function Header({ number_of_accounts = 0 }: InfoProps) {
               borderLeftWidth={1}
               borderColor="shapes_boxes"
             >
-              <Text textAlign="center" variant="default" color="shapes_boxes">
-                Você tem {number_of_accounts} contas {"\n"}
-                cadastradas para pagar
-              </Text>
+              {number_of_accounts === 0 ? (
+                <Text textAlign="center" variant="default" color="shapes_boxes">
+                  Parabéns nenhuma contas {"\n"}
+                  cadastradas para pagar
+                </Text>
+              ) : (
+                <Text textAlign="center" variant="default" color="shapes_boxes">
+                  Você tem {number_of_accounts} contas {"\n"}
+                  cadastradas para pagar
+                </Text>
+              )}
             </Box>
           </Box>
         )}
