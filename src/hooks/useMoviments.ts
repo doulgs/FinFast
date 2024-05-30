@@ -10,8 +10,14 @@ export interface MovimentTypes {
   wasPaid: boolean;
 }
 
+export interface CategoryTypes {
+  id: number;
+  label: string;
+}
+
 const useMoviments = () => {
   const [listMoviments, setListMoviments] = useState<MovimentTypes[]>([]);
+  const [categoryList, setCategoryList] = useState<CategoryTypes[]>([]);
 
   const fetchMoviments = useCallback(async () => {
     const { data, error } = await supabase
@@ -23,6 +29,18 @@ const useMoviments = () => {
       Alert.alert("Error", error.message);
     } else {
       setListMoviments(data);
+    }
+  }, []);
+
+  const fetchCategories = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .order("id", { ascending: false });
+    if (error) {
+      Alert.alert("Error", error.message);
+    } else {
+      setCategoryList(data);
     }
   }, []);
 
@@ -54,6 +72,8 @@ const useMoviments = () => {
   );
 
   return {
+    categoryList,
+    fetchCategories,
     listMoviments,
     fetchMoviments,
     updateMoviment,
