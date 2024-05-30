@@ -2,16 +2,19 @@ import { Box } from "@/components/Box";
 import { Button } from "@/components/Button";
 import { CategorySelect } from "@/components/CategorySelect";
 import { Input } from "@/components/Input";
+import { ParcelSelect } from "@/components/ParcelSelect";
 import { Text } from "@/components/Text";
-import { CategoryTypes, useMoviments } from "@/hooks/useMoviments";
+import { CategoryTypes, ParcelTypes, useMoviments } from "@/hooks/useMoviments";
 import { ThemeProps } from "@/themes";
+import { convertDateToISO, convertToFloatWithCents } from "@/utils";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useTheme } from "@shopify/restyle";
+import { addMonths, formatISO, parseISO } from "date-fns";
 import { useCallback, useState } from "react";
 import {
+  Dimensions,
   Keyboard,
   ScrollView,
-  Dimensions,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -22,21 +25,77 @@ const DIMENSION_SCREEN = Dimensions.get("window").height;
 const Movement: React.FC = () => {
   const { colors } = useTheme<ThemeProps>();
   const { navigate } = useNavigation();
-  const { categoryList, fetchCategories } = useMoviments();
+  const {
+    categoryList,
+    fetchCategories,
+    parcelList,
+    fetchParcel,
+    insertMoviment,
+  } = useMoviments();
 
   const [titleMov, setTitleMov] = useState<string>("");
   const [dateMov, setDateMov] = useState<string>("");
   const [valueMov, setValueMov] = useState<string>("");
 
   const [category, setCategory] = useState<CategoryTypes>({} as CategoryTypes);
+  const [parcel, setParcel] = useState<ParcelTypes>({} as ParcelTypes);
 
+  const [wasPaid, setWasPaid] = useState<boolean>(false);
   const [installment, setInstallment] = useState<boolean>(false);
-  const [numInstallment, setNumInstallment] = useState<string>("");
+
+  async function clean() {
+    setTitleMov("");
+    setDateMov("");
+    setValueMov("");
+    setCategory({} as CategoryTypes);
+    setParcel({} as ParcelTypes);
+    setWasPaid(false);
+    setInstallment(false);
+  }
+
+  async function handleInsertMoviment() {
+    try {
+      let isoDate = convertDateToISO(dateMov);
+      let currentDate = parseISO(isoDate);
+
+      if (installment) {
+        for (let i = 0; i < parcel.value; i++) {
+          await insertMoviment({
+            description: titleMov,
+            value: convertToFloatWithCents(valueMov),
+            date: formatISO(currentDate),
+            wasPaid: wasPaid,
+            category: category.label,
+            id_user: "4be6967b-873c-4533-a1a7-ec07d3696697",
+            id_organization: "e4b67b56-28e3-4002-ace2-d800e8013a72",
+          });
+          currentDate = addMonths(currentDate, 1);
+        }
+      } else {
+        await insertMoviment({
+          description: titleMov,
+          value: convertToFloatWithCents(valueMov),
+          date: formatISO(currentDate),
+          wasPaid: wasPaid,
+          category: category.label,
+          id_user: "4be6967b-873c-4533-a1a7-ec07d3696697",
+          id_organization: "e4b67b56-28e3-4002-ace2-d800e8013a72",
+        });
+      }
+    } catch (error) {
+      console.warn(error);
+    }
+    clean();
+    navigate("Home");
+  }
 
   useFocusEffect(
     useCallback(() => {
       fetchCategories();
-      return () => {};
+      fetchParcel();
+      return () => {
+        clean();
+      };
     }, [])
   );
 
@@ -60,7 +119,7 @@ const Movement: React.FC = () => {
                   inputType="normal"
                   value={titleMov}
                   placeholder="Nome da conta a ser inserida..."
-                  onChangeText={setTitleMov}
+                  onChangeText={(t, rt) => setTitleMov(rt)}
                 />
                 <Input
                   icon_name="calendar-outline"
@@ -68,7 +127,7 @@ const Movement: React.FC = () => {
                   inputType="date"
                   value={dateMov}
                   placeholder="Data da conta a ser inserida..."
-                  onChangeText={setDateMov}
+                  onChangeText={(t) => setDateMov(t)}
                 />
                 <CategorySelect
                   icon_name="bookmark-outline"
@@ -86,6 +145,19 @@ const Movement: React.FC = () => {
                 <BouncyCheckbox
                   size={22}
                   style={{ marginLeft: 20 }}
+                  text="A conta já esta paga."
+                  fillColor={colors.brand_primary}
+                  innerIconStyle={{ borderWidth: 2, borderRadius: 6 }}
+                  textStyle={{
+                    fontWeight: "bold",
+                    textDecorationLine: "none",
+                    color: colors.brand_primary,
+                  }}
+                  onPress={(isChecked: boolean) => setWasPaid(isChecked)}
+                />
+                <BouncyCheckbox
+                  size={22}
+                  style={{ marginLeft: 20 }}
                   text="Parcelamento"
                   fillColor={colors.brand_primary}
                   innerIconStyle={{ borderWidth: 2, borderRadius: 6 }}
@@ -97,14 +169,10 @@ const Movement: React.FC = () => {
                   onPress={(isChecked: boolean) => setInstallment(isChecked)}
                 />
                 {installment && (
-                  <Input
-                    icon_name="wallet-outline"
-                    icon_color={colors.brand_primary}
-                    inputType="normal"
-                    keyboardType="numeric"
-                    value={numInstallment}
-                    placeholder="Valor da conta a ser inserida..."
-                    onChangeText={setNumInstallment}
+                  <ParcelSelect
+                    icon_name="duplicate-outline"
+                    data={parcelList}
+                    onChange={setParcel}
                   />
                 )}
               </Box>
@@ -125,14 +193,14 @@ const Movement: React.FC = () => {
         <Button
           title="Cancelar"
           variant="outline"
-          onPress={() => navigate("Home")}
+          onPress={() => {
+            clean(), navigate("Home");
+          }}
         />
         <Button
           title="Confirmar"
           variant="solid"
-          onPress={() => {
-            console.log(category.label);
-          }}
+          onPress={handleInsertMoviment}
         />
       </View>
     </>

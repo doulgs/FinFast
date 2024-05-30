@@ -81,7 +81,7 @@ const Home: React.FC = () => {
                     {formatCurrency(moviment.value)}
                   </Text>
                   <Text variant="default" fontSize={14} textAlign="right">
-                    Alimentação
+                    {moviment.category}
                   </Text>
                 </Box>
               </Box>

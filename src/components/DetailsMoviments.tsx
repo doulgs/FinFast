@@ -1,5 +1,5 @@
-import { MovimentTypes } from "@/@types/moviments";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
+import { MovimentTypes } from "@/hooks/useMoviments";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Box } from "./Box";
 import { Button } from "./Button";
