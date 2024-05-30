@@ -1,66 +1,25 @@
-import { MovimentTypes } from "@/@types/moviments";
 import { Box } from "@/components/Box";
 import { DetailsMoviments } from "@/components/DetailsMoviments";
 import { Header } from "@/components/Header";
 import { Text } from "@/components/Text";
 import { useBottomSheet } from "@/contexts/BottomSheetContext";
-import { supabase } from "@/services/supabase";
-import { formatCurrency } from "@/utils/formatCurrency";
-import { formatDateTime } from "@/utils/formatDate";
-import { getMonthName } from "@/utils/getMonthName";
+import { useMoviments } from "@/hooks/useMoviments";
+import { formatCurrency, formatDateTime, getMonthName } from "@/utils";
 import { AntDesign } from "@expo/vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback, useState } from "react";
-import { Alert, FlatList, Pressable } from "react-native";
+import { useCallback } from "react";
+import { FlatList, Pressable } from "react-native";
 
 const Home: React.FC = () => {
   const { openBottomSheet, closeBottomSheet } = useBottomSheet();
-
-  const [listMoviments, setListMoviments] = useState<MovimentTypes[]>([]);
-
-  const fetchMoviments = async () => {
-    const { data, error } = await supabase
-      .from("moviments")
-      .select("*")
-      .eq("wasPaid", "FALSE")
-      .order("id", { ascending: false });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      setListMoviments(data);
-    }
-  };
-
-  const updateMoviment = async (id: number, wasPaid: boolean) => {
-    const { error } = await supabase
-      .from("moviments")
-      .update({ wasPaid })
-      .match({ id });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      closeBottomSheet();
-      await fetchMoviments();
-    }
-  };
-
-  const deleteMoviment = async (id: number) => {
-    const { error } = await supabase.from("moviments").delete().match({ id });
-    if (error) {
-      Alert.alert("Error", error.message);
-    } else {
-      closeBottomSheet();
-      await fetchMoviments();
-    }
-  };
+  const { listMoviments, fetchMoviments, updateMoviment, deleteMoviment } =
+    useMoviments();
 
   useFocusEffect(
     useCallback(() => {
-      //setLoading(true);
       fetchMoviments();
-      //setLoading(true);
       return () => {};
-    }, [openBottomSheet])
+    }, [fetchMoviments, openBottomSheet])
   );
 
   return (
