@@ -7,7 +7,7 @@ const Stack = createNativeStackNavigator();
 export function AuthRoutes() {
   return (
     <View style={{ flex: 1 }}>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Authentication" component={Authentication} />
       </Stack.Navigator>
     </View>

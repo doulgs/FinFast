@@ -1,7 +1,7 @@
 import { Box } from "@/components/Box";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/Buttons/Button";
 import { CategorySelect } from "@/components/CategorySelect";
-import { Input } from "@/components/Input";
+import { Input } from "@/components/Inputs/Input";
 import { ParcelSelect } from "@/components/ParcelSelect";
 import { Text } from "@/components/Text";
 import { CategoryTypes, ParcelTypes, useMoviments } from "@/hooks/useMoviments";

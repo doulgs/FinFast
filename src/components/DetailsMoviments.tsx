@@ -2,9 +2,9 @@ import { useBottomSheet } from "@/contexts/BottomSheetContext";
 import { MovimentTypes } from "@/hooks/useMoviments";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { Box } from "./Box";
-import { Button } from "./Button";
 import { ButtonIcon } from "./ButtonIcon";
 import { Text } from "./Text";
+import { Button } from "./Buttons/Button";
 
 interface ActionsProps {
   moviment: MovimentTypes;

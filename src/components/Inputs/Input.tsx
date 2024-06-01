@@ -1,8 +1,7 @@
-import React from "react";
-import { TextInput, TextInputProps } from "react-native";
-import { Box } from "./Box";
 import { Ionicons } from "@expo/vector-icons";
+import React from "react";
 import { MaskedTextInput, MaskedTextInputProps } from "react-native-mask-text";
+import { Box } from "../Box";
 
 type InputProps = MaskedTextInputProps & {
   inputType: "normal" | "date" | "value";
